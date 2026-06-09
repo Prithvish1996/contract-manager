@@ -20,8 +20,12 @@ RUN sed -i 's|https://gitpkg.now.sh/Prometheus-X-association/contract-consent-ag
 
 RUN rm -f pnpm-lock.yaml && npm install --legacy-peer-deps --ignore-scripts
 
-# Deduplicate to ensure only one copy of mongoose exists across app + contract-agent
-RUN npm dedupe --legacy-peer-deps
+# Force contract-agent to use the app's mongoose — they live in separate directory
+# trees (/tmp vs /usr/src/app) so Node resolves two different copies, breaking
+# cross-boundary Schema checks. Symlinking makes them share one instance.
+RUN rm -rf /tmp/contract-consent-agent/contract-agent/node_modules/mongoose \
+    && ln -s /usr/src/app/node_modules/mongoose \
+             /tmp/contract-consent-agent/contract-agent/node_modules/mongoose
 
 COPY . .
 

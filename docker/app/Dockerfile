@@ -20,6 +20,9 @@ RUN sed -i 's|https://gitpkg.now.sh/Prometheus-X-association/contract-consent-ag
 
 RUN rm -f pnpm-lock.yaml && npm install --legacy-peer-deps --ignore-scripts
 
+# Deduplicate to ensure only one copy of mongoose exists across app + contract-agent
+RUN npm dedupe --legacy-peer-deps
+
 COPY . .
 
 RUN chown -R node:node /usr/src/app

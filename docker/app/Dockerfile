@@ -26,6 +26,10 @@ RUN chown -R node:node /usr/src/app
 
 RUN sed -i 's/"noEmitOnError"[[:space:]]*:[[:space:]]*true/"noEmitOnError": false/' tsconfig.json || true
 
-RUN npm run build || true
+# Run tsc and tsc-alias separately — tsc exits non-zero on type errors even with
+# noEmitOnError:false, which would block tsc-alias (path alias resolution) in a chain
+RUN npx rimraf build/
+RUN npx tsc || true
+RUN npx tsc-alias || true
 
 CMD ["node", "build/start.js"]

@@ -11,7 +11,6 @@ jobs:
     permissions:
       contents: read
       packages: write
-      id-token: write
     steps:
       - uses: actions/checkout@v4
 
@@ -31,6 +30,7 @@ jobs:
           context: .
           file: docker/app/Dockerfile
           push: true
+          provenance: false
           tags: |
             ghcr.io/${{ env.OWNER }}/contract-manager:latest
             ghcr.io/${{ env.OWNER }}/contract-manager:${{ github.sha }}

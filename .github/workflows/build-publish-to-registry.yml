@@ -14,6 +14,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Lowercase owner
+        run: echo "OWNER=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
       - uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -28,5 +31,5 @@ jobs:
           file: docker/app/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/contract-manager:latest
-            ghcr.io/${{ github.repository_owner }}/contract-manager:${{ github.sha }}
+            ghcr.io/${{ env.OWNER }}/contract-manager:latest
+            ghcr.io/${{ env.OWNER }}/contract-manager:${{ github.sha }}
